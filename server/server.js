@@ -6,6 +6,23 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
+app.get('/api/tasks', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('todo') // Ensure this is your table name
+      .select('*');
+
+    if (error) {
+      throw error;
+    }
+
+    res.status(200).json(data);
+  } catch (error) {
+    console.error('Error fetching tasks:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post("/api/tasks", async (req, res) => {
   try {
     const newTask = req.body; // This is the object { taskName: "name", complete: false }
@@ -22,6 +39,7 @@ app.post("/api/tasks", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 app.put('/api/tasks/update', async (req,res) => {
   try{

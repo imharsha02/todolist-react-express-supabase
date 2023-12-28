@@ -1,9 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const App = () => {
   const [taskInput, setTaskInput] = useState("");
   const [tasks, setTasks] = useState([]);
 
+  const fetchTasks = async () => {
+    try {
+      const response = await fetch("/api/tasks");
+      if (!response.ok) {
+        throw new Error("Failed to fetch tasks");
+      }
+      const tasksData = await response.json();
+      setTasks(tasksData);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
+  };
+
+  // useEffect hook to fetch tasks on component mount
+  useEffect(() => {
+    fetchTasks();
+  }, []); 
+ 
   const handleChange = (e) => {
     setTaskInput(e.target.value);
   };
