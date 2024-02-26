@@ -1,4 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { Button } from "./components/ui/button";
+import { Input } from "./components/ui/input";
+import { TypographyLead } from "./components/ui/TypographyLead";
+import { TypographyH2 } from "./components/ui/TypographyH2";
+import { Card, CardContent } from "./components/ui/card";
 
 const App = () => {
   const [taskInput, setTaskInput] = useState("");
@@ -20,8 +25,8 @@ const App = () => {
   // useEffect hook to fetch tasks on component mount
   useEffect(() => {
     fetchTasks();
-  }, []); 
- 
+  }, []);
+
   const handleChange = (e) => {
     setTaskInput(e.target.value);
   };
@@ -82,76 +87,77 @@ const App = () => {
   const completedTasks = tasks.filter((task) => task.complete === true);
 
   return (
-    <>
-      <div className="max-w-6xl mx-auto">
-        <h1 className="py-2 text-center font-semibold text-3xl">TODO LIST</h1>
-        <form
-          onSubmit={handleSubmit}
-          className="text-center space-x-2 p-2 mb-2"
-        >
-          <input
+    // Container
+    <div className="w-max space-y-3 mx-auto mt-5">
+      {/* Heading and task input field */}
+      <div>
+        {/* Heading */}
+        <TypographyH2>TODO LIST</TypographyH2>
+
+        {/* Input field and button */}
+        <form onSubmit={handleSubmit} className="flex gap-2">
+          <Input
             type="text"
             name="taskInputField"
             value={taskInput}
             onChange={handleChange}
             placeholder="Enter a task..."
-            className="px-2 py-1 border rounded-sm focus:outline-none"
             required
+            className="w-max"
           />
-          <button
-            type="submit"
-            disabled={!taskInput}
-            className={
-              !taskInput
-                ? "bg-neutral-500 px-2 py-1 hover:cursor-not-allowed rounded text-white"
-                : "rounded bg-blue-500 transition hover:bg-blue-400 text-white px-2 py-1"
-            }
-          >
+
+          <Button type="submit" disabled={!taskInput}>
             Add Task
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={clearTodoList}
-            className={
-              !taskInput && tasks.length === 0
-                ? "bg-neutral-500 px-2 py-1 hover:cursor-not-allowed rounded text-white"
-                : "bg-red-500 transition text-white px-2 py-1"
-            }
+            disabled={!taskInput && tasks.length === 0}
           >
             Clear todo list
-          </button>
+          </Button>
         </form>
       </div>
-      <div className="text-center">
-        {tasks.map((task, index) => (
-          <div
-            key={index}
-            className="flex space-x-2 space-y-2 justify-center items-center"
-          >
-            <p className={task.complete?'line-through':'mt-3'}>{task.taskName}</p>
-            <button
-              type="button"
-              className={task.complete?"hidden":"bg-green-500 text-white py-1 px-2 rounded-lg font-semibold"}
-              title="mark as complete"
-              onClick={() => markAsComplete(task)}
-            >
-              Complete
-            </button>
-          </div>
-        ))}
-      </div>
 
-      <div className="mx-auto text-center">
-        {completedTasks.length > 0 ? (
-          <h1 className="text-2xl mt-2">Completed tasks</h1>
-        ) : (
-          ""
-        )}
-        {completedTasks.map((task, index) => (
-          <div key={index}>{task.taskName}</div>
-        ))}
+      {/* Rendering area */}
+      <div className=" space-y-5">
+        {/* Tasks yet to be completed */}
+        <Card className="w-full">
+          <CardContent className="pt-6">
+            <TypographyH2>Tasks todo</TypographyH2>
+            {tasks.map((task, index) => (
+              <div key={index} className="flex gap-2 space-y-3 items-center">
+                <TypographyLead className={task.complete ? "line-through" : ""}>
+                  {task.taskName}
+                </TypographyLead>
+                <Button
+                  type="button"
+                  className={task.complete ? "hidden" : ""}
+                  title="mark as complete"
+                  onClick={() => markAsComplete(task)}
+                >
+                  Complete
+                </Button>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Completed tasks */}
+        <Card className="w-full">
+          <CardContent className="pt-6">
+            {completedTasks.length > 0 ? (
+              <TypographyH2>Completed tasks</TypographyH2>
+            ) : (
+              ""
+            )}
+            {completedTasks.map((task, index) => (
+              <TypographyLead className="flex" key={index}>{task.taskName}</TypographyLead>
+            ))}
+          </CardContent>
+        </Card>
       </div>
-    </>
+    </div>
   );
 };
 
